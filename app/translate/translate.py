@@ -9,7 +9,7 @@ import requests
 
 # Key should be added as a value in Azure Key Vault
 # and retrieved as an Application Variable in App Service
-key = os.getenv('TranslatorKey')
+key = os.getenv('TRANSLATOR_KEY_2')
 endpoint = "https://api.cognitive.microsofttranslator.com"
 
 # location, also known as region.

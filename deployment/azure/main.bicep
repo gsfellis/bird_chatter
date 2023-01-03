@@ -23,6 +23,15 @@ param location string = 'eastus'
 ])
 param translatorPricingTier string = 'S1'
 
+var keyVaultName = 'kv-${uniqueString( resourceGroup().id )}'
+module keyVault 'modules/keyVault.bicep' = {
+  name: 'keyVault'
+  params: {
+    keyVaultName: keyVaultName
+    location: location
+  }
+}
+
 var translatorName = '${environmentName}-${solutionName}-translator'
 module translator 'modules/translator.bicep' = {
   name: 'translator'
@@ -30,7 +39,11 @@ module translator 'modules/translator.bicep' = {
     location: location
     translatorName: translatorName
     pricingTierName: translatorPricingTier
+    keyVaultName: keyVaultName
   }
+  dependsOn: [
+    keyVault
+  ]
 }
 
 var storageAccountName = '${environmentName}birdchattersa'
@@ -54,5 +67,11 @@ module functionApp 'modules/functionApp.bicep' = {
     functionAppName: functionAppName
     storageAccountName: storageAccount.outputs.name
     translatorId: translator.outputs.translatorId
+    keyVaultName: keyVaultName
   }
+  dependsOn: [
+    keyVault
+    storageAccount
+    translator
+  ]
 }

@@ -3,16 +3,21 @@ param appServiceName string
 param functionAppName string
 param storageAccountName string
 param translatorId string
+param keyVaultName string
 
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' existing = {
   name: storageAccountName
 }
 
+resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
+  name: keyVaultName
+}
+
 resource appService 'Microsoft.Web/serverfarms@2021-03-01' = {
   name: appServiceName
   location: location
-  kind: 'linux'
+  kind: 'linux'  
   sku : {
     tier: 'Dynamic'
     name: 'Y1'
@@ -25,10 +30,13 @@ resource appService 'Microsoft.Web/serverfarms@2021-03-01' = {
 resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
   name: functionAppName
   location: location
-  kind: 'functionapp,linux'  
+  kind: 'functionapp,linux'
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
     httpsOnly: true
-    clientAffinityEnabled: true
+    clientAffinityEnabled: true    
     serverFarmId: appService.id
     siteConfig: {
       pythonVersion: '3.9'
@@ -55,8 +63,12 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
           value: toLower(functionAppName)
         }
         {
-          name: 'TranslatorKey'
-          value: listKeys(translatorId, '2022-12-01').key1
+          name: 'TRANSLATOR_KEY_1'
+          value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=translatorKey1)'
+        }
+        {
+          name: 'TRANSLATOR_KEY_2'
+          value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=translatorKey2)'
         }
       ]
       cors: {
@@ -74,5 +86,21 @@ resource functionAppBinding 'Microsoft.Web/sites/hostNameBindings@2022-03-01' = 
   properties: {
     siteName: functionApp.name
     hostNameType: 'Verified'
+  }
+}
+
+resource keyVaultPolicy 'Microsoft.KeyVault/vaults/accessPolicies@2022-07-01' = {
+  name: 'replace'
+  parent: keyVault
+  properties: {
+    accessPolicies: [
+      {
+        objectId: functionApp.identity.principalId
+        tenantId: subscription().tenantId
+        permissions: {
+          secrets: [ 'get' ]
+        }
+      }
+    ]
   }
 }
