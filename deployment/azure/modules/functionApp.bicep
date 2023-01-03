@@ -2,6 +2,7 @@ param location string
 param appServiceName string
 param functionAppName string
 param storageAccountName string
+param translatorId string
 
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' existing = {
@@ -52,7 +53,11 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
         {
           name: 'WEBSITE_CONTENTSHARE'
           value: toLower(functionAppName)
-        }        
+        }
+        {
+          name: 'TranslatorKey'
+          value: listKeys(translatorId, '2022-12-01').key1
+        }
       ]
       cors: {
         allowedOrigins: [
