@@ -34,5 +34,3 @@ resource translatorKey2Secret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
     value: translator.listKeys().key2
   }
 }
-
-output translatorId string = translator.id

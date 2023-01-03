@@ -2,7 +2,6 @@ param location string
 param appServiceName string
 param functionAppName string
 param storageAccountName string
-param translatorId string
 param keyVaultName string
 
 

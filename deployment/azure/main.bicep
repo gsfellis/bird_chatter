@@ -66,7 +66,6 @@ module functionApp 'modules/functionApp.bicep' = {
     appServiceName: appServiceName
     functionAppName: functionAppName
     storageAccountName: storageAccount.outputs.name
-    translatorId: translator.outputs.translatorId
     keyVaultName: keyVaultName
   }
   dependsOn: [
