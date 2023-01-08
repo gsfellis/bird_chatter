@@ -1,3 +1,10 @@
 .venv
 .azure
 .vscode
+
+local/
+
+# Azurite
+__azurite_db*
+__blobstorage__/
+__queuestorage__/

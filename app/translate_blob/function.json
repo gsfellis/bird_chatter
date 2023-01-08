@@ -1,0 +1,12 @@
+{
+  "scriptFile": "translate_blob.py",
+  "bindings": [
+    {
+      "name": "myblob",
+      "type": "blobTrigger",
+      "direction": "in",
+      "path": "source/{name}",
+      "connection": "devbirdchattersa_STORAGE"
+    }
+  ]
+}

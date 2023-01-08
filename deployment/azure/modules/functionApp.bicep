@@ -69,6 +69,14 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
           name: 'TRANSLATOR_KEY_2'
           value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=translatorKey2)'
         }
+        {
+          name: 'STORAGE_KEY_1'
+          value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=storageKey1)'
+        }
+        {
+          name: 'STORAGE_KEY_2'
+          value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=storageKey2)'
+        }
       ]
       cors: {
         allowedOrigins: [

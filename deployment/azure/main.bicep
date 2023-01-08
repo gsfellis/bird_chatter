@@ -54,6 +54,7 @@ module storageAccount 'modules/storageAccount.bicep' = {
     storageAccountName: storageAccountName
     storageAccountSkuName: 'Standard_LRS'    
     storageAccountAccessTier: 'Hot'
+    keyVaultName: keyVaultName
   }
 }
 
