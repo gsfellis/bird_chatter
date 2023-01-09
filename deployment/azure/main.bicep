@@ -56,16 +56,21 @@ module storageAccount 'modules/storageAccount.bicep' = {
     storageAccountAccessTier: 'Hot'
     keyVaultName: keyVaultName
   }
+  dependsOn: [
+    keyVault
+  ]
 }
 
 var functionAppName = '${environmentName}birdchatterfa'
 var appServiceName = '${environmentName}birdchatteras'
+var appInsightsName = '${environmentName}birdchasserai'
 module functionApp 'modules/functionApp.bicep' = {
   name: 'functionApp'
   params: {
     location: location
     appServiceName: appServiceName
     functionAppName: functionAppName
+    applicationInsightsName: appInsightsName
     storageAccountName: storageAccount.outputs.name
     keyVaultName: keyVaultName
   }

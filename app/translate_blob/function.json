@@ -6,7 +6,7 @@
       "type": "blobTrigger",
       "direction": "in",
       "path": "source/{name}",
-      "connection": "devbirdchattersa_STORAGE"
+      "connection": "STORAGE_CONN_1"
     }
   ]
 }

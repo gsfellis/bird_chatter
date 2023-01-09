@@ -1,6 +1,7 @@
 param location string
 param appServiceName string
 param functionAppName string
+param applicationInsightsName string
 param storageAccountName string
 param keyVaultName string
 
@@ -62,6 +63,10 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
           value: toLower(functionAppName)
         }
         {
+          name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
+          value: applicationInsights.properties.InstrumentationKey
+        }
+        {
           name: 'TRANSLATOR_KEY_1'
           value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=translatorKey1)'
         }
@@ -76,6 +81,14 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
         {
           name: 'STORAGE_KEY_2'
           value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=storageKey2)'
+        }
+        {
+          name: 'STORAGE_CONN_1'
+          value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=storageConn1)'
+        }
+        {
+          name: 'STORAGE_CONN_2'
+          value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=storageConn2)'
         }
       ]
       cors: {
@@ -109,5 +122,16 @@ resource keyVaultPolicy 'Microsoft.KeyVault/vaults/accessPolicies@2022-07-01' = 
         }
       }
     ]
+  }
+}
+
+
+resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
+  name: applicationInsightsName
+  location: location
+  kind: 'web'
+  properties: {
+    Application_Type: 'web'
+    Request_Source: 'rest'
   }
 }

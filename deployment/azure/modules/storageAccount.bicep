@@ -45,6 +45,12 @@ resource targetContainer 'Microsoft.Storage/storageAccounts/blobServices/contain
   parent: blobService
 }
 
+// Save secrets to Keyvault
+var key1 = storageAccount.listKeys().keys[0].value
+var key2 = storageAccount.listKeys().keys[1].value
+var connString1 = 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};AccountKey=${key1};EndpointSuffix=core.windows.net'
+var connString2 = 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};AccountKey=${key2};EndpointSuffix=core.windows.net'
+
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: keyVaultName
 }
@@ -53,7 +59,7 @@ resource storageKey1Secret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
   name: 'storageKey1'
   parent: keyVault
   properties: {
-    value: storageAccount.listKeys().keys[0].value
+    value: key1
   }
 }
 
@@ -61,7 +67,23 @@ resource storageKey2Secret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
   name: 'storageKey2'
   parent: keyVault
   properties: {
-    value: storageAccount.listKeys().keys[1].value
+    value: key2
+  }
+}
+
+resource storageConn1Secret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
+  name: 'storageConn1'
+  parent: keyVault
+  properties: {
+    value: connString1
+  }
+}
+
+resource storageConn2Secret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
+  name: 'storageConn2'
+  parent: keyVault
+  properties: {
+    value: connString2
   }
 }
 
